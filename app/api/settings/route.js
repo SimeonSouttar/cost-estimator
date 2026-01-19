@@ -3,13 +3,16 @@ import db from '@/lib/db';
 
 export async function GET() {
     try {
-        const rs = await db.execute({
-            sql: 'SELECT value FROM settings WHERE key = ?',
-            args: ['target_margin_percent']
+        const rs = await db.execute('SELECT key, value FROM settings');
+        const settings = {};
+        rs.rows.forEach(row => {
+            settings[row.key] = row.value;
         });
-        const targetMargin = rs.rows.length > 0 ? parseFloat(rs.rows[0].value) : 30; // Default to 30 if not set
 
-        return NextResponse.json({ targetMargin });
+        return NextResponse.json({
+            targetMargin: settings.target_margin_percent ? parseFloat(settings.target_margin_percent) : 30,
+            defaultCurrency: settings.default_currency || 'GBP'
+        });
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -17,16 +20,23 @@ export async function GET() {
 
 export async function POST(request) {
     try {
-        const { targetMargin } = await request.json();
+        const body = await request.json();
 
-        if (targetMargin === undefined || targetMargin === null) {
-            return NextResponse.json({ error: 'Missing targetMargin' }, { status: 400 });
+        // Handle Target Margin
+        if (body.targetMargin !== undefined) {
+            await db.execute({
+                sql: 'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)',
+                args: ['target_margin_percent', String(body.targetMargin)]
+            });
         }
 
-        await db.execute({
-            sql: 'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)',
-            args: ['target_margin_percent', String(targetMargin)]
-        });
+        // Handle Default Currency
+        if (body.defaultCurrency !== undefined) {
+            await db.execute({
+                sql: 'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)',
+                args: ['default_currency', String(body.defaultCurrency)]
+            });
+        }
 
         return NextResponse.json({ message: 'Settings updated' });
     } catch (error) {
