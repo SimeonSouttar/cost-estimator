@@ -307,7 +307,6 @@ export default function CreateEstimatePage() {
                                                     <select
                                                         value={role.internalRoleId}
                                                         onChange={(e) => updateProjectRoleMapping(index, e.target.value)}
-                                                        style={{ padding: '0.5rem' }}
                                                     >
                                                         {availableRoles.map(r => (
                                                             <option key={r.id} value={r.id}>{r.name}</option>
@@ -316,15 +315,21 @@ export default function CreateEstimatePage() {
                                                 </div>
                                                 <div>
                                                     <label style={{ fontSize: '0.8rem' }}>Internal Cost ({symbol}/day)</label>
-                                                    <div style={{ padding: '0.5rem', background: 'var(--background)', borderRadius: 'var(--radius)' }}>
-                                                        {symbol}{role.internalRate}
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        readOnly
+                                                        value={`${symbol}${role.internalRate}`}
+                                                        style={{ background: 'var(--background)', color: 'var(--secondary)' }}
+                                                    />
                                                 </div>
                                                 <div>
                                                     <label style={{ fontSize: '0.8rem' }}>Charge Out ({symbol}/day)</label>
-                                                    <div style={{ padding: '0.5rem', background: 'var(--background)', borderRadius: 'var(--radius)' }}>
-                                                        {symbol}{role.chargeRate}
-                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        readOnly
+                                                        value={`${symbol}${role.chargeRate}`}
+                                                        style={{ background: 'var(--background)', color: 'var(--secondary)' }}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>

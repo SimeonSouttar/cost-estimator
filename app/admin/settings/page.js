@@ -172,7 +172,7 @@ export default function SettingsPage() {
             </div>
 
             {/* EXISTING ROLES LIST */}
-            <div className="card mt-8">
+            <div className="card mt-16">
                 <h2 className="text-xl font-bold mb-4">Existing Roles</h2>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">

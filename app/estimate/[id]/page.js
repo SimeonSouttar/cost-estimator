@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, use } from 'react';
-import Navbar from '@/components/Navbar';
+
 
 export default function EstimateDetails({ params }) {
     const { id } = use(params);
@@ -66,7 +66,6 @@ export default function EstimateDetails({ params }) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Navbar />
             <main className="container mx-auto py-10 px-4">
                 <div className="flex justify-between items-center mb-8">
                     <div>
