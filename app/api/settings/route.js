@@ -3,9 +3,11 @@ import db from '@/lib/db';
 
 export async function GET() {
     try {
-        const stmt = db.prepare('SELECT value FROM settings WHERE key = ?');
-        const result = stmt.get('target_margin_percent');
-        const targetMargin = result ? parseFloat(result.value) : 30; // Default to 30 if not set
+        const rs = await db.execute({
+            sql: 'SELECT value FROM settings WHERE key = ?',
+            args: ['target_margin_percent']
+        });
+        const targetMargin = rs.rows.length > 0 ? parseFloat(rs.rows[0].value) : 30; // Default to 30 if not set
 
         return NextResponse.json({ targetMargin });
     } catch (error) {
@@ -21,8 +23,10 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Missing targetMargin' }, { status: 400 });
         }
 
-        const stmt = db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)');
-        stmt.run('target_margin_percent', String(targetMargin));
+        await db.execute({
+            sql: 'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)',
+            args: ['target_margin_percent', String(targetMargin)]
+        });
 
         return NextResponse.json({ message: 'Settings updated' });
     } catch (error) {
