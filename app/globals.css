@@ -1,15 +1,24 @@
 :root {
   /* Rich Dark Theme Palette */
-  --background: #0f172a; /* Slate 900 */
-  --foreground: #e2e8f0; /* Slate 200 */
-  --card-bg: #1e293b; /* Slate 800 */
-  --card-border: #334155; /* Slate 700 */
-  --primary: #3b82f6; /* Blue 500 */
+  --background: #0f172a;
+  /* Slate 900 */
+  --foreground: #e2e8f0;
+  /* Slate 200 */
+  --card-bg: #1e293b;
+  /* Slate 800 */
+  --card-border: #334155;
+  /* Slate 700 */
+  --primary: #3b82f6;
+  /* Blue 500 */
   --primary-glow: rgba(59, 130, 246, 0.5);
-  --secondary: #64748b; /* Slate 500 */
-  --accent: #8b5cf6; /* Violet 500 */
-  --success: #10b981; /* Emerald 500 */
-  --danger: #ef4444; /* Red 500 */
+  --secondary: #64748b;
+  /* Slate 500 */
+  --accent: #8b5cf6;
+  /* Violet 500 */
+  --success: #10b981;
+  /* Emerald 500 */
+  --danger: #ef4444;
+  /* Red 500 */
   --radius: 12px;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -35,16 +44,30 @@ a {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: #fff;
   font-weight: 700;
   letter-spacing: -0.025em;
   margin-bottom: 1rem;
 }
 
-h1 { font-size: 2.5rem; line-height: 1.2; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
 
 /* Utilities / Components */
 .container {
@@ -103,17 +126,19 @@ h3 { font-size: 1.5rem; }
 }
 
 .btn-danger {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger);
-    border: 1px solid transparent;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  border: 1px solid transparent;
 }
+
 .btn-danger:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: var(--danger);
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--danger);
 }
 
 /* Form Elements */
-input, select, textarea {
+input,
+select {
   background: var(--background);
   border: 1px solid var(--card-border);
   color: var(--foreground);
@@ -124,9 +149,26 @@ input, select, textarea {
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s;
+  height: 44px;
 }
 
-input:focus, select:focus, textarea:focus {
+textarea {
+  background: var(--background);
+  border: 1px solid var(--card-border);
+  color: var(--foreground);
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  min-height: 100px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
@@ -139,7 +181,7 @@ label {
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Tables */
@@ -148,7 +190,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   text-align: left;
   padding: 1rem;
   border-bottom: 1px solid var(--card-border);
@@ -167,10 +210,30 @@ tr:last-child td {
 }
 
 /* Layout Helpers */
-.flex { display: flex; }
-.justify-between { justify-content: space-between; }
-.items-center { align-items: center; }
-.gap-4 { gap: 1rem; }
-.mt-4 { margin-top: 1rem; }
-.mb-8 { margin-bottom: 2rem; }
-.text-right { text-align: right; }
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.text-right {
+  text-align: right;
+}

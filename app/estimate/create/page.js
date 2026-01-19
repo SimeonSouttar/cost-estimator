@@ -203,9 +203,19 @@ export default function CreateEstimatePage() {
 
     const symbol = CURRENCIES[formData.currency] || '£';
 
+    const getStepTitle = (currentStep) => {
+        switch (currentStep) {
+            case 1: return 'Create Estimate - Project Information';
+            case 2: return 'Create Estimate - Add Roles';
+            case 3: return 'Create Estimate - Add Tasks';
+            case 4: return 'Create Estimate - Confirm';
+            default: return 'Create Estimate';
+        }
+    };
+
     return (
         <main className="container" style={{ padding: '2rem 0', maxWidth: '900px' }}>
-            <h1 className="mb-8">{step === 4 ? 'Confirm Estimate' : `Create Estimate - Step ${step}/4`}</h1>
+            <h1 className="mb-8">{getStepTitle(step)}</h1>
 
             {/* Progress Bar */}
             <div style={{ display: 'flex', gap: '4px', marginBottom: '2rem' }}>
