@@ -59,15 +59,29 @@ export default function Home() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {estimates.map(est => (
               <Link key={est.id} href={`/estimate/${est.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: 'transform 0.2s' }}>
-                  <div>
+                <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: 'transform 0.2s', position: 'relative' }}>
+                  <div style={{ flex: 1 }}>
                     <h4 style={{ marginBottom: '0.25rem' }}>{est.project_name}</h4>
                     <p style={{ color: 'var(--secondary)', fontSize: '0.9rem' }}>{est.client_name} • {est.type}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right" style={{ marginRight: '2rem' }}>
                     <p style={{ fontSize: '0.9rem', color: 'var(--secondary)' }}>Start: {new Date(est.start_date).toLocaleDateString()}</p>
                     <p style={{ fontWeight: 'bold' }}>{est.duration} {est.duration_unit}</p>
                   </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (confirm('Are you sure you want to delete this estimate? This cannot be undone.')) {
+                        fetch(`/api/estimates/${est.id}`, { method: 'DELETE' })
+                          .then(() => fetchEstimates());
+                      }
+                    }}
+                    className="btn btn-danger"
+                    style={{ padding: '0.5rem', fontSize: '0.8rem', position: 'absolute', right: '1rem', top: '1rem' }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </Link>
             ))}

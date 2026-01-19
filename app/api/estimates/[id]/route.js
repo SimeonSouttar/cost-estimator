@@ -55,3 +55,40 @@ export async function GET(request, { params }) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
+export async function DELETE(request, { params }) {
+    const { id } = await params;
+
+    try {
+        // Delete dependent data first (manual cascade)
+        // 1. Delete task roles
+        await db.execute({
+            sql: `DELETE FROM estimate_task_roles 
+                  WHERE task_id IN (SELECT id FROM estimate_tasks WHERE estimate_id = ?)`,
+            args: [id]
+        });
+
+        // 2. Delete tasks
+        await db.execute({
+            sql: 'DELETE FROM estimate_tasks WHERE estimate_id = ?',
+            args: [id]
+        });
+
+        // 3. Delete estimate roles (project specific roles)
+        await db.execute({
+            sql: 'DELETE FROM estimate_roles WHERE estimate_id = ?',
+            args: [id]
+        });
+
+        // 4. Delete the estimate
+        await db.execute({
+            sql: 'DELETE FROM estimates WHERE id = ?',
+            args: [id]
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Delete error:', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
