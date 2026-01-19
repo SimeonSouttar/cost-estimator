@@ -79,78 +79,80 @@ export default function EstimateDetails({ params }) {
                     </div>
                 </div>
 
-                {/* Financial Summary Table */}
-                <div className="bg-white rounded-lg shadow p-6 mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Financial Summary</h2>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="border-b bg-gray-50">
-                                    <th className="p-3 font-medium text-gray-600">Total Revenue</th>
-                                    <th className="p-3 font-medium text-gray-600">Total Cost</th>
-                                    <th className="p-3 font-medium text-gray-600">project Profit</th>
-                                    <th className="p-3 font-medium text-gray-600">Margin %</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="p-3 text-lg font-bold text-gray-900">{formatCurrency(totalRevenue)}</td>
-                                    <td className="p-3 text-lg font-bold text-gray-900">{formatCurrency(totalCost)}</td>
-                                    <td className="p-3 text-lg font-bold text-green-600">{formatCurrency(profit)}</td>
-                                    <td className={`p-3 text-lg font-bold ${isLowMargin ? 'text-red-600' : 'text-blue-600'}`}>
+                {/* Financial Summary Table - Vertical Layout */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-10 max-w-2xl mx-auto">
+                    <h2 className="text-xl font-bold mb-6 text-gray-800 border-b pb-4">Financial Overview</h2>
+                    <table className="w-full text-left">
+                        <tbody>
+                            <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                                <td className="py-4 font-medium text-gray-600">Total Revenue</td>
+                                <td className="py-4 text-right font-bold text-gray-900 text-lg">{formatCurrency(totalRevenue)}</td>
+                            </tr>
+                            <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                                <td className="py-4 font-medium text-gray-600">Total Cost</td>
+                                <td className="py-4 text-right font-medium text-gray-700">{formatCurrency(totalCost)}</td>
+                            </tr>
+                            <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors">
+                                <td className="py-4 font-medium text-gray-600">Project Profit</td>
+                                <td className="py-4 text-right font-bold text-green-600 text-lg">{formatCurrency(profit)}</td>
+                            </tr>
+                            <tr className="hover:bg-gray-50 transition-colors">
+                                <td className="py-4 font-medium text-gray-600">Net Margin</td>
+                                <td className="py-4 text-right">
+                                    <span className={`font-bold text-lg ${isLowMargin ? 'text-red-600' : 'text-blue-600'}`}>
                                         {margin.toFixed(1)}%
-                                        {isLowMargin && <span className="text-xs ml-2 bg-red-100 text-red-800 px-2 py-1 rounded">Below Target ({targetMargin}%)</span>}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </span>
+                                    {isLowMargin && (
+                                        <div className="text-xs text-red-500 mt-1">
+                                            Below Target ({targetMargin}%)
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 {/* Scope of Work */}
-                <div className="bg-gray-100 rounded-lg p-6 mt-8">
-                    <h2 className="text-xl font-semibold mb-6">Scope of Work Breakdown</h2>
-                    <div className="space-y-6">
-                        {estimate.tasks.map((task, index) => (
-                            <div key={index} className="bg-white rounded shadow-sm overflow-hidden">
-                                <div className="bg-gray-50 border-b p-4 flex justify-between items-center">
-                                    <h3 className="font-bold text-lg text-gray-800">{task.description}</h3>
-                                    <span className="text-sm font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                                        {task.days} Days
-                                    </span>
-                                </div>
-                                <div className="p-4">
-                                    <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="text-gray-500 border-b">
-                                                <th className="text-left pb-2">Role</th>
-                                                <th className="text-right pb-2">Rate ({currencyCode})</th>
-                                                <th className="text-right pb-2">Cost Rate</th>
-                                                <th className="text-right pb-2">Total Rev</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {task.roles.map((role, rIndex) => (
-                                                <tr key={rIndex} className="border-b last:border-0 hover:bg-gray-50">
-                                                    <td className="py-2">
-                                                        <div className="font-medium">{role.sold_role_name}</div>
-                                                        {role.sold_role_name !== role.cost_role_name && (
-                                                            <div className="text-xs text-gray-500">Mapped to: {role.cost_role_name}</div>
-                                                        )}
-                                                    </td>
-                                                    <td className="text-right py-2">{formatCurrency(role.sell_rate)}</td>
-                                                    <td className="text-right py-2 text-gray-500">{formatCurrency(role.cost_rate)}</td>
-                                                    <td className="text-right py-2 font-medium">
-                                                        {formatCurrency(role.sell_rate * task.days)}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                <div className="space-y-8">
+                    <h2 className="text-2xl font-bold text-gray-800">Scope of Work Breakdown</h2>
+                    {estimate.tasks.map((task, index) => (
+                        <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div className="bg-gray-50 border-b px-6 py-4 flex justify-between items-center">
+                                <h3 className="font-semibold text-lg text-gray-900">{task.description}</h3>
+                                <div className="text-sm font-medium bg-white text-gray-600 px-3 py-1 rounded border border-gray-200 shadow-sm">
+                                    {task.days} Days Total
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                            <div className="p-6">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="text-gray-500 border-b">
+                                            <th className="text-left pb-3 font-medium uppercase text-xs tracking-wider">Role</th>
+                                            <th className="text-right pb-3 font-medium uppercase text-xs tracking-wider">Day Rate</th>
+                                            <th className="text-right pb-3 font-medium uppercase text-xs tracking-wider">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                        {task.roles.map((role, rIndex) => (
+                                            <tr key={rIndex} className="hover:bg-gray-50 transition-colors">
+                                                <td className="py-3">
+                                                    <div className="font-medium text-gray-900">{role.sold_role_name}</div>
+                                                    {role.sold_role_name !== role.cost_role_name && (
+                                                        <div className="text-xs text-gray-400 mt-0.5">Internal: {role.cost_role_name}</div>
+                                                    )}
+                                                </td>
+                                                <td className="text-right py-3 text-gray-600">{formatCurrency(role.sell_rate)}</td>
+                                                <td className="text-right py-3 font-medium text-gray-900">
+                                                    {formatCurrency(role.sell_rate * task.days)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </main>
         </div>
