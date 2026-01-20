@@ -37,7 +37,7 @@ export default function EstimateDetails({ params }) {
     }, [id]);
 
     if (loading) return <div className="container py-10 text-center">Loading...</div>;
-    if (error) return <div className="container py-10 text-center text-red-500">Error: {error}</div>;
+    if (error) return <div className="container py-10 text-center text-danger">Error: {error}</div>;
     if (!estimate) return <div className="container py-10 text-center">Estimate not found</div>;
 
     // Financial Calculations
@@ -71,39 +71,39 @@ export default function EstimateDetails({ params }) {
                 <div className="flex justify-between items-end mb-8">
                     <div>
                         <h1>{estimate.project_name}</h1>
-                        <p className="text-xl" style={{ color: 'var(--primary)' }}>{estimate.client_name}</p>
+                        <p className="text-xl text-primary">{estimate.client_name}</p>
                     </div>
                     <div className="text-right">
-                        <p style={{ color: 'var(--text-muted)' }}>Duration: {estimate.duration} {estimate.duration_unit}</p>
-                        <p style={{ color: 'var(--text-muted)' }}>Start: {estimate.start_date}</p>
+                        <p className="text-muted">Duration: {estimate.duration} {estimate.duration_unit}</p>
+                        <p className="text-muted">Start: {estimate.start_date}</p>
                     </div>
                 </div>
 
                 {/* Financial Summary Table */}
                 <Card className="mb-10 max-w-3xl mx-auto">
-                    <h2 className="mb-6 border-b pb-4" style={{ borderColor: 'var(--card-border)' }}>Financial Overview</h2>
+                    <h2 className="mb-6 border-b pb-4 border-card">Financial Overview</h2>
                     <table className="w-full text-left">
                         <tbody>
                             <tr>
-                                <td className="py-4 font-medium" style={{ color: 'var(--text-muted)' }}>Total Revenue</td>
-                                <td className="py-4 text-right font-bold text-lg" style={{ color: 'var(--success)' }}>{formatCurrency(totalRevenue)}</td>
+                                <td className="py-4 font-medium text-muted">Total Revenue</td>
+                                <td className="py-4 text-right font-bold text-lg text-success">{formatCurrency(totalRevenue)}</td>
                             </tr>
                             <tr>
-                                <td className="py-4 font-medium" style={{ color: 'var(--text-muted)' }}>Total Cost</td>
-                                <td className="py-4 text-right font-medium" style={{ color: 'var(--text-muted)' }}>{formatCurrency(totalCost)}</td>
+                                <td className="py-4 font-medium text-muted">Total Cost</td>
+                                <td className="py-4 text-right font-medium text-muted">{formatCurrency(totalCost)}</td>
                             </tr>
                             <tr>
-                                <td className="py-4 font-medium" style={{ color: 'var(--text-muted)' }}>Project Profit</td>
-                                <td className="py-4 text-right font-bold text-lg" style={{ color: 'var(--primary)' }}>{formatCurrency(profit)}</td>
+                                <td className="py-4 font-medium text-muted">Project Profit</td>
+                                <td className="py-4 text-right font-bold text-lg text-primary">{formatCurrency(profit)}</td>
                             </tr>
                             <tr>
-                                <td className="py-4 font-medium" style={{ color: 'var(--text-muted)' }}>Net Margin</td>
+                                <td className="py-4 font-medium text-muted">Net Margin</td>
                                 <td className="py-4 text-right">
-                                    <span className={`font-bold text-lg`} style={{ color: isLowMargin ? 'var(--danger)' : 'var(--secondary)' }}>
+                                    <span className={`font-bold text-lg ${isLowMargin ? 'text-danger' : 'text-secondary'}`}>
                                         {margin.toFixed(1)}%
                                     </span>
                                     {isLowMargin && (
-                                        <div style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                                        <div className="text-danger font-small mt-1">
                                             Below Target ({targetMargin}%)
                                         </div>
                                     )}
@@ -114,20 +114,20 @@ export default function EstimateDetails({ params }) {
                 </Card>
 
                 {/* Scope of Work */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <h2 className="text-2xl font-bold">Scope of Work Breakdown</h2>
+                <div className="flex gap-large" style={{ flexDirection: 'column' }}>
+                    <h2 className="font-h2">Scope of Work Breakdown</h2>
                     {estimate.tasks.map((task, index) => (
                         <Card key={index} className="overflow-hidden !p-0">
-                            <div className="border-b px-6 py-4 flex justify-between items-center" style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'var(--card-border)' }}>
+                            <div className="border-b px-6 py-4 flex justify-between items-center border-card" style={{ background: 'rgba(255,255,255,0.03)' }}>
                                 <h3 className="font-semibold text-lg m-0">{task.description}</h3>
-                                <div className="text-sm font-medium px-3 py-1 rounded border" style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                                <div className="text-sm font-medium px-3 py-1 rounded border border-card text-muted">
                                     {task.days} Days Total
                                 </div>
                             </div>
                             <div className="p-6">
                                 <table className="w-full text-sm">
                                     <thead>
-                                        <tr className="border-b" style={{ borderColor: 'var(--card-border)' }}>
+                                        <tr className="border-b border-card">
                                             <th className="text-left pb-3 font-medium uppercase text-xs tracking-wider">Role</th>
                                             <th className="text-right pb-3 font-medium uppercase text-xs tracking-wider">Day Rate</th>
                                             <th className="text-right pb-3 font-medium uppercase text-xs tracking-wider">Total</th>
@@ -137,13 +137,13 @@ export default function EstimateDetails({ params }) {
                                         {task.roles.map((role, rIndex) => (
                                             <tr key={rIndex}>
                                                 <td className="py-3">
-                                                    <div className="font-medium" style={{ color: 'var(--text-main)' }}>{role.sold_role_name}</div>
+                                                    <div className="font-medium text-main">{role.sold_role_name}</div>
                                                     {role.sold_role_name !== role.cost_role_name && (
-                                                        <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Internal: {role.cost_role_name}</div>
+                                                        <div className="text-xs mt-0.5 text-muted">Internal: {role.cost_role_name}</div>
                                                     )}
                                                 </td>
-                                                <td className="text-right py-3" style={{ color: 'var(--text-muted)' }}>{formatCurrency(role.sell_rate)}</td>
-                                                <td className="text-right py-3 font-medium" style={{ color: 'var(--primary)' }}>
+                                                <td className="text-right py-3 text-muted">{formatCurrency(role.sell_rate)}</td>
+                                                <td className="text-right py-3 font-medium text-primary">
                                                     {formatCurrency(role.sell_rate * task.days)}
                                                 </td>
                                             </tr>

@@ -26,8 +26,8 @@ export default function CreateEstimatePage() {
         duration: '',
         durationUnit: 'weeks',
         currency: 'GBP',
-        projectRoles: [], // { roleId, internalRoleId, roleName, internalRoleName, internalRate, chargeRate }
-        tasks: [] // { description, projectRoleIndex, days }
+        projectRoles: [],
+        tasks: []
     });
 
     useEffect(() => {
@@ -60,7 +60,6 @@ export default function CreateEstimatePage() {
 
     const handleBack = () => setStep(step - 1);
 
-    // --- Helpers (Same logic as before) ---
     const addProjectRole = (roleId) => {
         const role = availableRoles.find(r => r.id == roleId);
         if (!role) return;
@@ -214,7 +213,7 @@ export default function CreateEstimatePage() {
             <h1 className="mb-8 text-center">{getStepTitle(step)}</h1>
 
             {/* Progress Bar */}
-            <div className="flex gap-2 mb-8 items-center justify-center">
+            <div className="flex gap-small mb-8 items-center justify-center">
                 {[1, 2, 3, 4].map(s => (
                     <div key={s} className="flex-1 max-w-[100px] h-1 rounded-full relative" style={{ background: s <= step ? 'var(--primary)' : 'rgba(255,255,255,0.1)' }}>
                         <div style={{
@@ -277,7 +276,7 @@ export default function CreateEstimatePage() {
                                 </div>
                             </div>
                             <div className="form-group flex justify-center items-center h-full pt-6">
-                                <span style={{ color: 'var(--secondary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                                <span className="text-secondary font-small" style={{ fontWeight: 600 }}>
                                     Target: {getWorkingDays()} Working Days
                                 </span>
                             </div>
@@ -290,11 +289,11 @@ export default function CreateEstimatePage() {
                         <div className="flex justify-between items-center mb-6">
                             <div>
                                 <h3>Project Roles</h3>
-                                <p style={{ color: 'var(--text-muted)' }}>Map sold roles to internal resources.</p>
+                                <p className="text-muted">Map sold roles to internal resources.</p>
                             </div>
                         </div>
 
-                        <div className="form-group flex gap-2 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--card-border)' }}>
+                        <div className="form-group flex gap-2 p-4 rounded-xl border-card" style={{ background: 'rgba(255,255,255,0.02)' }}>
                             <select id="role-picker" style={{ flex: 1, background: 'transparent', border: 'none' }}>
                                 <option value="">Select a role to add...</option>
                                 {availableRoles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
@@ -308,13 +307,13 @@ export default function CreateEstimatePage() {
                             }}>+ Add Role</Button>
                         </div>
 
-                        <div className="mt-6 flex flex-col gap-4">
+                        <div className="mt-4 flex flex-col gap-4">
                             {formData.projectRoles.length === 0 ? <p className="text-center text-muted">No roles added yet.</p> : (
                                 formData.projectRoles.map((role, index) => (
                                     <Card key={index} className="!p-4 border-l-4" style={{ borderLeftColor: 'var(--primary)' }}>
                                         <div className="flex justify-between items-center mb-4">
                                             <h4 style={{ margin: 0, fontSize: '1.25rem' }}>{role.roleName}</h4>
-                                            <Button variant="danger" onClick={() => removeProjectRole(index)} className="!p-2 text-xs">Remove</Button>
+                                            <Button variant="danger" onClick={() => removeProjectRole(index)} className="!p-2 text-tiny">Remove</Button>
                                         </div>
                                         <div className="grid grid-cols-3 gap-6">
                                             <div>
@@ -351,11 +350,11 @@ export default function CreateEstimatePage() {
                             <Button variant="secondary" onClick={addTask}>+ Add Task</Button>
                         </div>
                         {formData.tasks.length === 0 ? (
-                            <p className="text-center py-8 text-muted border-2 border-dashed border-slate-700 rounded-xl">No tasks defined. Add one to get started.</p>
+                            <p className="text-center py-8 text-muted border-2 border-dashed border-card rounded-main">No tasks defined. Add one to get started.</p>
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {formData.tasks.map((task, index) => (
-                                    <div key={index} className="p-6 rounded-xl bg-slate-900/50 border border-slate-700/50 relative group">
+                                    <div key={index} className="p-6 rounded-main bg-slate-900/50 border border-slate-700/50 relative group">
                                         <div className="flex gap-6 items-start">
                                             <div className="flex-[2]">
                                                 <label>Task Description</label>
@@ -388,7 +387,7 @@ export default function CreateEstimatePage() {
                                                         <button
                                                             key={roleIndex}
                                                             onClick={() => toggleTaskRole(index, roleIndex)}
-                                                            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${isSelected ? 'bg-primary text-black shadow-glow' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
+                                                            className={`px-3 py-1 rounded-full font-tiny font-medium transition-all ${isSelected ? 'bg-primary text-black shadow-glow' : 'bg-slate-800 text-muted hover:bg-slate-700'}`}
                                                         >
                                                             {role.roleName}
                                                         </button>
@@ -396,7 +395,7 @@ export default function CreateEstimatePage() {
                                                 })}
                                             </div>
                                             {(!task.projectRoleIndices || task.projectRoleIndices.length === 0) && (
-                                                <p className="text-danger text-xs mt-2">⚠ Assignment required</p>
+                                                <p className="text-danger font-tiny mt-2">⚠ Assignment required</p>
                                             )}
                                         </div>
                                     </div>
@@ -412,12 +411,12 @@ export default function CreateEstimatePage() {
                         <div className="grid grid-cols-2 gap-8 mb-8">
                             <Card className="!bg-slate-800/50">
                                 <label>Project Details</label>
-                                <h4 className="mt-2 text-xl text-white">{formData.projectName}</h4>
+                                <h4 className="mt-2 text-white">{formData.projectName}</h4>
                                 <p className="text-primary">{formData.clientName}</p>
                             </Card>
                             <Card className="!bg-slate-800/50">
                                 <label>Timeline</label>
-                                <h4 className="mt-2 text-xl text-white">{formData.duration} {formData.durationUnit}</h4>
+                                <h4 className="mt-2 text-white">{formData.duration} {formData.durationUnit}</h4>
                                 <p className="text-secondary">Starts {new Date(formData.startDate).toLocaleDateString()}</p>
                             </Card>
                         </div>
@@ -438,7 +437,7 @@ export default function CreateEstimatePage() {
                                     {calculateCosts().breakdown.map((item, i) => (
                                         <tr key={i}>
                                             <td className="font-medium">{item.description}</td>
-                                            <td className="text-sm text-muted">{item.roleNames}</td>
+                                            <td className="font-small text-muted">{item.roleNames}</td>
                                             <td className="text-right">{item.days}d</td>
                                             <td className="text-right text-muted">{symbol}{item.internal.toLocaleString()}</td>
                                             <td className="text-right font-medium">{symbol}{item.charge.toLocaleString()}</td>
@@ -449,10 +448,10 @@ export default function CreateEstimatePage() {
                                     ))}
                                 </tbody>
                                 <tfoot>
-                                    <tr className="bg-slate-800/50 text-lg">
+                                    <tr className="bg-slate-800/50 font-h3">
                                         <td colSpan={3} className="font-bold">Total Project Value</td>
-                                        <td className="text-right text-muted">{symbol}{calculateCosts().internalTotal.toLocaleString()}</td>
-                                        <td className="text-right text-success font-bold text-xl drop-shadow-lg">{symbol}{calculateCosts().chargeTotal.toLocaleString()}</td>
+                                        <td className="text-right text-muted font-body">{symbol}{calculateCosts().internalTotal.toLocaleString()}</td>
+                                        <td className="text-right text-success font-bold font-h3 drop-shadow-lg">{symbol}{calculateCosts().chargeTotal.toLocaleString()}</td>
                                         <td className="text-right text-primary font-bold">{calculateCosts().totalMargin.toFixed(1)}%</td>
                                     </tr>
                                 </tfoot>
@@ -461,9 +460,9 @@ export default function CreateEstimatePage() {
                     </div>
                 )}
 
-                {error && <div className="p-4 mt-6 bg-red-500/10 border border-red-500/50 rounded-xl text-red-500 text-center">{error}</div>}
+                {error && <div className="p-4 mt-6 bg-red-500/10 border border-red-500/50 rounded-xl text-danger text-center">{error}</div>}
 
-                <div className="flex justify-between mt-10 pt-6 border-t border-slate-800">
+                <div className="flex justify-between mt-10 pt-6 border-t border-card">
                     {step > 1 ? (
                         <Button variant="ghost" onClick={handleBack}>← Back</Button>
                     ) : <div />}

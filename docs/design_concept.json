@@ -1,0 +1,54 @@
+{
+  "name": "Consulancy Cost Estimator Design Concept",
+  "description": "A high-level design direction inspired by 'Future Tech' aesthetics, characterized by deep dark backgrounds, vibrant neon accents, and depth through glassmorphism.",
+  "principles": [
+    {
+      "name": "Future Tech Aesthetic",
+      "description": "The interface should feel modern, sleek, and slightly futuristic. Use deep dark backgrounds contrasted with vibrant electric colors (cyan, green, purple)."
+    },
+    {
+      "name": "Depth through Glassmorphism",
+      "description": "Use translucent layers with backdrop blur to create depth and hierarchy. Content sits on 'glass' panes floating above the dark background."
+    },
+    {
+      "name": "Vibrant Accents & Glows",
+      "description": "Use neon accents sparingly but effectively for primary actions and highlights. Interactive elements should emit a soft glow."
+    },
+    {
+      "name": "Clean & Bold Typography",
+      "description": "Typography should be sans-serif (Inter) and highly readable. Headings are bold and often feature gradient text fills."
+    }
+  ],
+  "guidelines": {
+    "structure": {
+      "layout": "Container-based layout with centered content (max-width 1200px).",
+      "containers": "Content is grouped into rounded 'glass' cards.",
+      "spacing": "Generous spacing. Standard padding for cards is 2rem. Global section gap is 2-4rem."
+    },
+    "colors": {
+      "palette_name": "Future Tech Palette",
+      "primary": "Electric Cyan (#00f2ff) - Used for primary actions, focus states, and key highlights.",
+      "secondary": "Neon Green (#00ff94) - Used for success states, secondary accents, and gradients.",
+      "accent": "Electric Purple (#7000ff) - Used for depth and subtle background glows.",
+      "background": {
+        "base": "Deep Navy/Black (#0a0f1c)",
+        "highlight": "Dark Blue/Grey (#111827) - Slightly lighter for contrast."
+      },
+      "text": {
+        "main": "White (#ffffff) - Primary text.",
+        "muted": "Blue-Grey (#94a3b8) - Secondary text, labels, and meta-data."
+      }
+    },
+    "typography": {
+      "font_family": "Inter, sans-serif",
+      "headings": "Bold (700 weight). H1 often uses a horizontal gradient (Cyan to Green). Letter-spacing is slightly tight (-0.02em).",
+      "body": "Regular weight, line-height 1.6 for readability.",
+      "labels": "Uppercase, tracking-wide, slightly smaller size (0.9rem)."
+    },
+    "design_style": {
+      "borders": "Exceedingly subtle white borders (10% opacity) for glass cards.",
+      "radius": "Consistent rounded corners (16px) for cards and inputs. Buttons are fully pill-shaped or rounded.",
+      "shadows": "Soft, colored glow shadows for interactive elements. Deep distinct shadows for floating cards."
+    }
+  }
+}

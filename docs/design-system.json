@@ -1,0 +1,148 @@
+{
+    "name": "Cost Estimator Design System",
+    "version": "1.0.0",
+    "description": "A comprehensive guide to the styles and components used in the Cost Estimator application.",
+    "tokens": {
+        "colors": {
+            "background-base": "#0a0f1c",
+            "background-highlight": "#111827",
+            "primary": "#00f2ff",
+            "primary-glow": "rgba(0, 242, 255, 0.4)",
+            "secondary": "#00ff94",
+            "secondary-glow": "rgba(0, 255, 148, 0.4)",
+            "accent": "#7000ff",
+            "accent-glow": "rgba(112, 0, 255, 0.4)",
+            "text-main": "#ffffff",
+            "text-muted": "#94a3b8",
+            "card-bg": "rgba(30, 41, 59, 0.4)",
+            "card-border": "rgba(255, 255, 255, 0.1)",
+            "card-hover-border": "rgba(0, 242, 255, 0.3)",
+            "gradient-main": "linear-gradient(135deg, var(--primary), var(--secondary))",
+            "gradient-text": "linear-gradient(90deg, var(--primary), var(--secondary))"
+        },
+        "typography": {
+            "font-family": "'Inter', sans-serif",
+            "weights": {
+                "regular": 400,
+                "medium": 500,
+                "semibold": 600,
+                "bold": 700
+            },
+            "sizes": {
+                "h1": "3.5rem",
+                "h2": "2.5rem",
+                "h3": "1.75rem",
+                "body": "1rem",
+                "small": "0.875rem",
+                "tiny": "0.75rem"
+            }
+        },
+        "spacing": {
+            "container-padding": "1.5rem",
+            "card-padding": "2rem",
+            "gap-small": "0.5rem",
+            "gap-medium": "1rem",
+            "gap-large": "2rem"
+        },
+        "borders": {
+            "radius-main": "16px",
+            "radius-input": "12px",
+            "width-thin": "1px"
+        },
+        "effects": {
+            "backdrop-blur": "blur(12px)",
+            "shadow-card": "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
+            "shadow-card-hover": "0 12px 40px 0 rgba(0, 242, 255, 0.1)",
+            "shadow-glow-primary": "0 0 20px rgba(0, 242, 255, 0.3)"
+        }
+    },
+    "components": {
+        "Card": {
+            "description": "The primary container for content.",
+            "styles": {
+                "background": "var(--card-bg)",
+                "backdrop-filter": "var(--backdrop-blur)",
+                "border": "1px solid var(--card-border)",
+                "border-radius": "var(--radius-main)",
+                "padding": "var(--card-padding)",
+                "box-shadow": "var(--shadow-card)",
+                "transition": "transform 0.3s, border-color 0.3s, box-shadow 0.3s"
+            },
+            "states": {
+                "hover": {
+                    "transform": "translateY(-4px)",
+                    "border-color": "var(--card-hover-border)",
+                    "box-shadow": "var(--shadow-card-hover)"
+                }
+            }
+        },
+        "Button": {
+            "description": "Interactive element for triggering actions.",
+            "base_styles": {
+                "display": "inline-flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "padding": "0.75rem 1.5rem",
+                "border-radius": "var(--radius-main)",
+                "font-weight": "600",
+                "transition": "all 0.3s ease"
+            },
+            "variants": {
+                "primary": {
+                    "background": "var(--gradient-main)",
+                    "color": "#000",
+                    "box-shadow": "var(--shadow-glow-primary)",
+                    "hover": {
+                        "transform": "translateY(-2px)",
+                        "box-shadow": "0 0 30px rgba(0, 242, 255, 0.5)"
+                    }
+                },
+                "secondary": {
+                    "background": "rgba(255, 255, 255, 0.05)",
+                    "border": "1px solid var(--card-border)",
+                    "color": "var(--text-main)",
+                    "hover": {
+                        "background": "rgba(255, 255, 255, 0.1)",
+                        "border-color": "var(--primary)",
+                        "color": "var(--primary)"
+                    }
+                },
+                "danger": {
+                    "background": "rgba(255, 50, 50, 0.1)",
+                    "color": "#ff4d4d",
+                    "border": "1px solid rgba(255, 50, 50, 0.2)",
+                    "hover": {
+                        "background": "rgba(255, 50, 50, 0.2)",
+                        "box-shadow": "0 0 15px rgba(255, 50, 50, 0.2)"
+                    }
+                },
+                "ghost": {
+                    "background": "transparent",
+                    "color": "var(--text-muted)",
+                    "hover": {
+                        "color": "var(--text-main)",
+                        "text-shadow": "0 0 8px rgba(255, 255, 255, 0.5)"
+                    }
+                }
+            }
+        },
+        "Input": {
+            "description": "Text fields for user input.",
+            "styles": {
+                "background": "rgba(15, 23, 42, 0.6)",
+                "border": "1px solid var(--card-border)",
+                "border-radius": "var(--radius-input)",
+                "padding": "1rem",
+                "color": "var(--text-main)",
+                "outline": "none"
+            },
+            "states": {
+                "focus": {
+                    "border-color": "var(--primary)",
+                    "box-shadow": "0 0 0 3px var(--primary-glow)",
+                    "background": "rgba(15, 23, 42, 0.8)"
+                }
+            }
+        }
+    }
+}

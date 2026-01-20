@@ -1,51 +1,51 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 
 export default function Home() {
   const [estimates, setEstimates] = useState([]);
-  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchEstimates();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
+    fetch('/api/estimates')
+      .then(res => res.json())
+      .then(data => {
+        setEstimates(data);
+        setLoading(false);
+      });
+  }, []);
 
-  const fetchEstimates = async () => {
+  const handleDelete = async (e, id) => {
+    e.preventDefault(); // Prevent link navigation
+    if (!confirm('Are you sure you want to delete this estimate?')) return;
+
     try {
-      setLoading(true);
-      const res = await fetch(`/api/estimates?search=${encodeURIComponent(search)}`);
+      const res = await fetch(`/api/estimates/${id}`, { method: 'DELETE' });
       if (res.ok) {
-        setEstimates(await res.json());
+        setEstimates(estimates.filter(est => est.id !== id));
+      } else {
+        alert('Failed to delete estimate');
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      alert('Error deleting estimate');
     }
   };
 
-  const handleDelete = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (confirm('Are you sure you want to delete this estimate? This cannot be undone.')) {
-      fetch(`/api/estimates/${id}`, { method: 'DELETE' })
-        .then(() => fetchEstimates());
-    }
-  };
+  const filtered = estimates.filter(e =>
+    e.project_name.toLowerCase().includes(search.toLowerCase()) ||
+    e.client_name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <main className="container" style={{ padding: '4rem 0' }}>
-      {/* Hero / Header */}
+    <main className="container" style={{ padding: '4rem 1.5rem' }}>
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1>Unlock the potential<br />of your estimates</h1>
-          <p style={{ color: 'var(--text-muted)', maxWidth: '600px', fontSize: '1.25rem', marginTop: '1rem' }}>
+          <p className="text-muted font-h3 mt-4" style={{ maxWidth: '600px' }}>
             Drive smarter decisions with precision costing. Turn your insights into action and strategies into measurable results.
           </p>
         </div>
@@ -54,8 +54,7 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Search */}
-      <Card className="mb-8" style={{ padding: '1rem' }}>
+      <Card className="mb-8">
         <input
           type="text"
           placeholder="Search estimates by project or client name..."
@@ -65,36 +64,33 @@ export default function Home() {
         />
       </Card>
 
-      {/* List */}
       <div className="grid">
-        {loading ? <p>Loading...</p> : estimates.length === 0 ? (
-          <p style={{ color: 'var(--text-muted)' }}>No estimates found. Start a new one!</p>
+        {loading ? <p>Loading...</p> : filtered.length === 0 ? (
+          <p className="text-muted">No estimates found. Start a new one!</p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {estimates.map(est => (
+          <div className="flex" style={{ flexDirection: 'column', gap: '1rem' }}>
+            {filtered.map(est => (
               <Link key={est.id} href={`/estimate/${est.id}`}>
                 <Card className="hover:border-primary transition-colors flex justify-between items-center group relative overflow-hidden">
-                  <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
-                    <h4 style={{ marginBottom: '0.25rem', color: 'var(--text-main)' }}>{est.project_name}</h4>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{est.client_name} • <span style={{ color: 'var(--secondary)' }}>{est.type}</span></p>
+                  <div>
+                    <h3 style={{ marginBottom: '0.5rem' }}>{est.project_name}</h3>
+                    <p className="text-primary font-medium">{est.client_name}</p>
+                    <p className="text-muted font-small mt-4">
+                      Created: {new Date(est.created_at).toLocaleDateString()}
+                    </p>
                   </div>
-                  <div className="text-right flex items-center gap-6" style={{ marginRight: '4rem', position: 'relative', zIndex: 1 }}>
-                    <div>
-                      <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Start Date</p>
-                      <p style={{ fontSize: '0.9rem' }}>{new Date(est.start_date).toLocaleDateString()}</p>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Duration</p>
-                      <p style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{est.duration} {est.duration_unit}</p>
-                    </div>
+                  <div className="text-right">
+                    <span className="text-muted font-medium block">Duration</span>
+                    <span className="font-h3">{est.duration} {est.duration_unit}</span>
                   </div>
 
+                  {/* Delete Button (appears on hover) */}
                   <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}>
                     <Button
                       variant="danger"
                       onClick={(e) => handleDelete(e, est.id)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity font-small"
+                      style={{ padding: '0.5rem 1rem' }}
                     >
                       Delete
                     </Button>

@@ -202,7 +202,7 @@ export default function SettingsPage() {
                     </div>
                 </div>
 
-                <div className="border-t pt-6" style={{ borderColor: 'var(--card-border)' }}>
+                <div className="border-t pt-6 border-card">
                     <h3 className="text-lg font-bold mb-4">Create New Rate Card</h3>
                     <form onSubmit={handleCreateRateCard} className="flex gap-4 items-end">
                         <div className="form-group mb-0 flex-1">
@@ -226,7 +226,7 @@ export default function SettingsPage() {
                     <h2 className="text-xl font-bold mb-6">Application Settings</h2>
                     <div className="form-group mb-6">
                         <label className="block mb-2 font-medium">Global Currency</label>
-                        <p className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>Default currency for all estimates.</p>
+                        <p className="text-sm mb-2 text-muted">Default currency for all estimates.</p>
                         <select
                             value={defaultCurrency}
                             onChange={e => setDefaultCurrency(e.target.value)}
@@ -239,7 +239,7 @@ export default function SettingsPage() {
 
                     <div className="form-group mb-6">
                         <label className="block mb-2 font-medium">Target Profit Margin (%)</label>
-                        <p className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>Low margin alerts trigger below this %.</p>
+                        <p className="text-sm mb-2 text-muted">Low margin alerts trigger below this %.</p>
                         <input
                             type="number"
                             value={targetMargin}
@@ -269,7 +269,7 @@ export default function SettingsPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="form-group mb-4">
-                                <label className="block mb-2 font-medium" style={{ color: 'var(--text-muted)' }}>Cost Rate ({defaultCurrency})</label>
+                                <label className="block mb-2 font-medium text-muted">Cost Rate ({defaultCurrency})</label>
                                 <input
                                     type="number"
                                     value={roleForm.internal_rate}
@@ -279,7 +279,7 @@ export default function SettingsPage() {
                                 />
                             </div>
                             <div className="form-group mb-4">
-                                <label className="block mb-2 font-medium" style={{ color: 'var(--text-muted)' }}>Sell Rate ({defaultCurrency})</label>
+                                <label className="block mb-2 font-medium text-muted">Sell Rate ({defaultCurrency})</label>
                                 <input
                                     type="number"
                                     value={roleForm.charge_out_rate}
@@ -289,7 +289,7 @@ export default function SettingsPage() {
                                 />
                             </div>
                         </div>
-                        {roleError && <p className="text-red-500 mb-4">{roleError}</p>}
+                        {roleError && <p className="text-danger mb-4">{roleError}</p>}
                         <Button type="submit" disabled={!selectedRateCard} variant="secondary" className="w-full">Add Role</Button>
                     </form>
                 </Card>
@@ -301,7 +301,7 @@ export default function SettingsPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="border-b" style={{ borderColor: 'var(--card-border)' }}>
+                            <tr className="border-b border-card">
                                 <th className="p-3 uppercase text-xs tracking-wider">Role Name</th>
                                 <th className="p-3 text-right uppercase text-xs tracking-wider">Internal Cost</th>
                                 <th className="p-3 text-right uppercase text-xs tracking-wider">Charge Out (Sell)</th>
@@ -311,17 +311,17 @@ export default function SettingsPage() {
                         <tbody>
                             {roles.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="p-4 text-center" style={{ color: 'var(--text-muted)' }}>No roles found for this rate card.</td>
+                                    <td colSpan="4" className="p-4 text-center text-muted">No roles found for this rate card.</td>
                                 </tr>
                             ) : roles.map((role) => {
                                 const margin = role.charge_out_rate > 0
                                     ? ((role.charge_out_rate - role.internal_rate) / role.charge_out_rate * 100).toFixed(0)
                                     : 0;
                                 return (
-                                    <tr key={role.id} className="border-b last:border-0 hover:bg-slate-800/50 transition-colors" style={{ borderColor: 'var(--card-border)' }}>
+                                    <tr key={role.id} className="border-b last:border-0 hover:bg-slate-800/50 transition-colors border-card">
                                         <td className="p-3 font-medium">{role.name}</td>
-                                        <td className="p-3 text-right text-red-500">{formatCurrency(role.internal_rate)}</td>
-                                        <td className="p-3 text-right text-green-500">{formatCurrency(role.charge_out_rate)}</td>
+                                        <td className="p-3 text-right text-danger">{formatCurrency(role.internal_rate)}</td>
+                                        <td className="p-3 text-right text-success">{formatCurrency(role.charge_out_rate)}</td>
                                         <td className="p-3 text-right font-bold text-primary">{margin}%</td>
                                     </tr>
                                 );
