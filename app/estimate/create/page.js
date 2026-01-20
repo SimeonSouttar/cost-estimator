@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Card from '@/components/Card';
+import Button from '@/components/Button';
 
 const CURRENCIES = {
     'GBP': '£',
@@ -58,18 +60,15 @@ export default function CreateEstimatePage() {
 
     const handleBack = () => setStep(step - 1);
 
-    // --- Step 2 Helpers ---
-    // --- Step 2 Helpers ---
+    // --- Helpers (Same logic as before) ---
     const addProjectRole = (roleId) => {
         const role = availableRoles.find(r => r.id == roleId);
         if (!role) return;
 
-        // Default mapping: Internal Role = Sold Role
         const newProjectRole = {
             roleId: role.id,
             internalRoleId: role.id,
             roleName: role.name,
-            // UI Helpers
             internalRate: role.internal_rate,
             chargeRate: role.charge_out_rate
         };
@@ -92,7 +91,6 @@ export default function CreateEstimatePage() {
 
     const removeProjectRole = (index) => {
         const newRoles = formData.projectRoles.filter((_, i) => i !== index);
-        // Remove this index from any tasks and shift others down
         const newTasks = formData.tasks.map(t => ({
             ...t,
             projectRoleIndices: t.projectRoleIndices
@@ -103,7 +101,6 @@ export default function CreateEstimatePage() {
         setFormData({ ...formData, projectRoles: newRoles, tasks: newTasks });
     };
 
-    // --- Step 3 Helpers ---
     const addTask = () => {
         setFormData({
             ...formData,
@@ -134,11 +131,10 @@ export default function CreateEstimatePage() {
         setFormData({ ...formData, tasks: newTasks });
     };
 
-    // --- Calculations ---
     const getWorkingDays = () => {
         const d = parseFloat(formData.duration) || 0;
         if (formData.durationUnit === 'weeks') return d * 5;
-        if (formData.durationUnit === 'months') return d * 21; // approx
+        if (formData.durationUnit === 'months') return d * 21;
         return d;
     }
 
@@ -199,42 +195,43 @@ export default function CreateEstimatePage() {
         }
     };
 
-    if (loading) return <div className="container mt-4">Loading...</div>;
+    if (loading) return <div className="container mt-4 text-center">Loading...</div>;
 
     const symbol = CURRENCIES[formData.currency] || '£';
 
     const getStepTitle = (currentStep) => {
         switch (currentStep) {
-            case 1: return 'Create Estimate - Project Information';
-            case 2: return 'Create Estimate - Add Roles';
-            case 3: return 'Create Estimate - Add Tasks';
-            case 4: return 'Create Estimate - Confirm';
+            case 1: return 'Project Information';
+            case 2: return 'Add Roles';
+            case 3: return 'Add Tasks';
+            case 4: return 'Review & Confirm';
             default: return 'Create Estimate';
         }
     };
 
     return (
-        <main className="container" style={{ padding: '2rem 0', maxWidth: '900px' }}>
-            <h1 className="mb-8">{getStepTitle(step)}</h1>
+        <main className="container" style={{ padding: '4rem 0', maxWidth: '1000px' }}>
+            <h1 className="mb-8 text-center">{getStepTitle(step)}</h1>
 
             {/* Progress Bar */}
-            <div style={{ display: 'flex', gap: '4px', marginBottom: '2rem' }}>
+            <div className="flex gap-2 mb-8 items-center justify-center">
                 {[1, 2, 3, 4].map(s => (
-                    <div key={s} style={{
-                        height: '4px',
-                        flex: 1,
-                        backgroundColor: s <= step ? 'var(--primary)' : 'var(--card-border)',
-                        borderRadius: '2px'
-                    }} />
+                    <div key={s} className="flex-1 max-w-[100px] h-1 rounded-full relative" style={{ background: s <= step ? 'var(--primary)' : 'rgba(255,255,255,0.1)' }}>
+                        <div style={{
+                            position: 'absolute', right: 0, top: '50%', transform: 'translate(50%, -50%)',
+                            width: '12px', height: '12px', borderRadius: '50%',
+                            background: s <= step ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
+                            boxShadow: s <= step ? '0 0 10px var(--primary)' : 'none'
+                        }} />
+                    </div>
                 ))}
             </div>
 
-            <div className="card">
+            <Card>
                 {step === 1 && (
-                    <div className="animate-fade-in">
-                        <h3>Project Information</h3>
-                        <div className="flex gap-4">
-                            <div className="form-group" style={{ flex: 1 }}>
+                    <div className="animate-fade-in flex flex-col gap-6">
+                        <div className="flex gap-6">
+                            <div className="form-group flex-1">
                                 <label>Currency</label>
                                 <select value={formData.currency} onChange={e => setFormData({ ...formData, currency: e.target.value })}>
                                     <option value="GBP">GBP (£)</option>
@@ -242,42 +239,47 @@ export default function CreateEstimatePage() {
                                     <option value="EUR">EUR (€)</option>
                                 </select>
                             </div>
-                            <div style={{ flex: 2 }}></div>
+                            <div className="flex-[2]"></div>
                         </div>
 
                         <div className="form-group">
                             <label>Project Name</label>
-                            <input type="text" value={formData.projectName} onChange={e => setFormData({ ...formData, projectName: e.target.value })} />
+                            <input type="text" value={formData.projectName} onChange={e => setFormData({ ...formData, projectName: e.target.value })} placeholder="e.g. Next-Gen Transformation" />
                         </div>
-                        <div className="form-group">
-                            <label>Client Name</label>
-                            <input type="text" value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} />
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="form-group">
+                                <label>Client Name</label>
+                                <input type="text" value={formData.clientName} onChange={e => setFormData({ ...formData, clientName: e.target.value })} placeholder="e.g. Acme Corp" />
+                            </div>
+                            <div className="form-group">
+                                <label>Project Type</label>
+                                <select value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
+                                    <option>Time and Materials</option>
+                                    <option>Fixed Price</option>
+                                </select>
+                            </div>
                         </div>
-                        <div className="form-group">
-                            <label>Project Type</label>
-                            <select style={{ width: '100%' }} value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
-                                <option>Fixed Price</option>
-                                <option>Time and Materials</option>
-                            </select>
-                        </div>
-                        <div className="flex gap-4 items-end">
-                            <div className="form-group" style={{ flex: 1 }}>
+
+                        <div className="grid grid-cols-3 gap-6 items-start">
+                            <div className="form-group">
                                 <label>Start Date</label>
                                 <input type="date" value={formData.startDate} onChange={e => setFormData({ ...formData, startDate: e.target.value })} />
                             </div>
-                            <div className="form-group" style={{ flex: 1 }}>
+                            <div className="form-group">
                                 <label>Duration</label>
                                 <div className="flex gap-2">
                                     <input type="number" value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value })} placeholder="10" />
-                                    <select value={formData.durationUnit} onChange={e => setFormData({ ...formData, durationUnit: e.target.value })} style={{ width: '100px' }}>
-                                        <option value="days">Days</option>
+                                    <select value={formData.durationUnit} onChange={e => setFormData({ ...formData, durationUnit: e.target.value })} style={{ width: '120px' }}>
                                         <option value="weeks">Weeks</option>
+                                        <option value="days">Days</option>
                                         <option value="months">Months</option>
                                     </select>
                                 </div>
                             </div>
-                            <div className="form-group" style={{ flex: 1, paddingBottom: '0.8rem', color: 'var(--secondary)', fontSize: '0.9rem' }}>
-                                Approx. {getWorkingDays()} Working Days
+                            <div className="form-group flex justify-center items-center h-full pt-6">
+                                <span style={{ color: 'var(--secondary)', fontSize: '0.9rem', fontWeight: 600 }}>
+                                    Target: {getWorkingDays()} Working Days
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -285,66 +287,58 @@ export default function CreateEstimatePage() {
 
                 {step === 2 && (
                     <div className="animate-fade-in">
-                        <h3>Project Roles & Rates</h3>
-                        <p style={{ color: 'var(--secondary)', marginBottom: '1rem' }}>Define the roles for this project. You can map a sold role to a different internal role for cost calculation.</p>
+                        <div className="flex justify-between items-center mb-6">
+                            <div>
+                                <h3>Project Roles</h3>
+                                <p style={{ color: 'var(--text-muted)' }}>Map sold roles to internal resources.</p>
+                            </div>
+                        </div>
 
-                        <div className="form-group flex gap-2">
-                            <select id="role-picker" style={{ flex: 1 }}>
+                        <div className="form-group flex gap-2 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--card-border)' }}>
+                            <select id="role-picker" style={{ flex: 1, background: 'transparent', border: 'none' }}>
                                 <option value="">Select a role to add...</option>
                                 {availableRoles.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                             </select>
-                            <button type="button" className="btn btn-secondary" onClick={() => {
+                            <Button variant="secondary" onClick={() => {
                                 const select = document.getElementById('role-picker');
                                 if (select.value) {
                                     addProjectRole(select.value);
                                     select.value = "";
                                 }
-                            }}>Add Role</button>
+                            }}>+ Add Role</Button>
                         </div>
 
-                        <div className="mt-4">
-                            {formData.projectRoles.length === 0 ? <p>No roles added yet.</p> : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                    {formData.projectRoles.map((role, index) => (
-                                        <div key={index} style={{ border: '1px solid var(--card-border)', padding: '1rem', borderRadius: 'var(--radius)' }}>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <h4 style={{ margin: 0 }}>{role.roleName} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--secondary)' }}>(Sold As)</span></h4>
-                                                <button onClick={() => removeProjectRole(index)} className="btn btn-danger" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>Remove</button>
+                        <div className="mt-6 flex flex-col gap-4">
+                            {formData.projectRoles.length === 0 ? <p className="text-center text-muted">No roles added yet.</p> : (
+                                formData.projectRoles.map((role, index) => (
+                                    <Card key={index} className="!p-4 border-l-4" style={{ borderLeftColor: 'var(--primary)' }}>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h4 style={{ margin: 0, fontSize: '1.25rem' }}>{role.roleName}</h4>
+                                            <Button variant="danger" onClick={() => removeProjectRole(index)} className="!p-2 text-xs">Remove</Button>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-6">
+                                            <div>
+                                                <label>Internal Resource Mapping</label>
+                                                <select
+                                                    value={role.internalRoleId}
+                                                    onChange={(e) => updateProjectRoleMapping(index, e.target.value)}
+                                                >
+                                                    {availableRoles.map(r => (
+                                                        <option key={r.id} value={r.id}>{r.name}</option>
+                                                    ))}
+                                                </select>
                                             </div>
-                                            <div className="grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-                                                <div>
-                                                    <label style={{ fontSize: '0.8rem' }}>Internal Mapping</label>
-                                                    <select
-                                                        value={role.internalRoleId}
-                                                        onChange={(e) => updateProjectRoleMapping(index, e.target.value)}
-                                                    >
-                                                        {availableRoles.map(r => (
-                                                            <option key={r.id} value={r.id}>{r.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label style={{ fontSize: '0.8rem' }}>Internal Cost ({symbol}/day)</label>
-                                                    <input
-                                                        type="text"
-                                                        readOnly
-                                                        value={`${symbol}${role.internalRate}`}
-                                                        style={{ background: 'var(--background)', color: 'var(--secondary)' }}
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label style={{ fontSize: '0.8rem' }}>Charge Out ({symbol}/day)</label>
-                                                    <input
-                                                        type="text"
-                                                        readOnly
-                                                        value={`${symbol}${role.chargeRate}`}
-                                                        style={{ background: 'var(--background)', color: 'var(--secondary)' }}
-                                                    />
-                                                </div>
+                                            <div>
+                                                <label>Internal Cost ({symbol}/day)</label>
+                                                <input type="text" readOnly value={`${symbol}${role.internalRate}`} className="bg-transparent border-none text-muted" />
+                                            </div>
+                                            <div>
+                                                <label>Charge Out ({symbol}/day)</label>
+                                                <input type="text" readOnly value={`${symbol}${role.chargeRate}`} className="bg-transparent border-none text-muted" />
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </Card>
+                                ))
                             )}
                         </div>
                     </div>
@@ -352,31 +346,49 @@ export default function CreateEstimatePage() {
 
                 {step === 3 && (
                     <div className="animate-fade-in">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3>Define Tasks</h3>
-                            <button onClick={addTask} className="btn btn-secondary">+ Add Task</button>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3>Scope & Tasks</h3>
+                            <Button variant="secondary" onClick={addTask}>+ Add Task</Button>
                         </div>
                         {formData.tasks.length === 0 ? (
-                            <p style={{ color: 'var(--secondary)', textAlign: 'center', padding: '2rem' }}>No tasks added yet.</p>
+                            <p className="text-center py-8 text-muted border-2 border-dashed border-slate-700 rounded-xl">No tasks defined. Add one to get started.</p>
                         ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div className="flex flex-col gap-4">
                                 {formData.tasks.map((task, index) => (
-                                    <div key={index} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', padding: '1rem', background: 'var(--background)', borderRadius: 'var(--radius)' }}>
-                                        <div style={{ flex: 3 }}>
-                                            <label style={{ fontSize: '0.8rem' }}>Description</label>
-                                            <input type="text" value={task.description} onChange={e => updateTask(index, 'description', e.target.value)} placeholder="Task description" />
+                                    <div key={index} className="p-6 rounded-xl bg-slate-900/50 border border-slate-700/50 relative group">
+                                        <div className="flex gap-6 items-start">
+                                            <div className="flex-[2]">
+                                                <label>Task Description</label>
+                                                <input
+                                                    type="text"
+                                                    value={task.description}
+                                                    onChange={e => updateTask(index, 'description', e.target.value)}
+                                                    placeholder="Describe the activity..."
+                                                    className="font-medium"
+                                                />
+                                            </div>
+                                            <div className="flex-1">
+                                                <label>Effort (Days)</label>
+                                                <input
+                                                    type="number"
+                                                    value={task.days}
+                                                    onChange={e => updateTask(index, 'days', e.target.value)}
+                                                    placeholder="0"
+                                                />
+                                            </div>
+                                            <Button variant="danger" onClick={() => removeTask(index)} className="absolute -top-3 -right-3 rounded-full w-8 h-8 !p-0 shadow-lg">✕</Button>
                                         </div>
-                                        <div style={{ flex: 3 }}>
-                                            <label style={{ fontSize: '0.8rem' }}>Assigned Project Roles</label>
-                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+
+                                        <div className="mt-4">
+                                            <label>Assigned Roles</label>
+                                            <div className="flex flex-wrap gap-2 mt-2">
                                                 {formData.projectRoles.map((role, roleIndex) => {
                                                     const isSelected = task.projectRoleIndices && task.projectRoleIndices.includes(roleIndex);
                                                     return (
                                                         <button
                                                             key={roleIndex}
                                                             onClick={() => toggleTaskRole(index, roleIndex)}
-                                                            className={`btn ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
-                                                            style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', opacity: isSelected ? 1 : 0.6 }}
+                                                            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${isSelected ? 'bg-primary text-black shadow-glow' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
                                                         >
                                                             {role.roleName}
                                                         </button>
@@ -384,15 +396,8 @@ export default function CreateEstimatePage() {
                                                 })}
                                             </div>
                                             {(!task.projectRoleIndices || task.projectRoleIndices.length === 0) && (
-                                                <p style={{ color: 'var(--danger)', fontSize: '0.75rem', marginTop: '0.25rem' }}>Select at least one role</p>
+                                                <p className="text-danger text-xs mt-2">⚠ Assignment required</p>
                                             )}
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <label style={{ fontSize: '0.8rem' }}>Days</label>
-                                            <input type="number" value={task.days} onChange={e => updateTask(index, 'days', e.target.value)} placeholder="0" />
-                                        </div>
-                                        <div style={{ paddingTop: '1.7rem' }}>
-                                            <button onClick={() => removeTask(index)} className="btn btn-danger" style={{ padding: '0.5rem' }}>✕</button>
                                         </div>
                                     </div>
                                 ))}
@@ -403,73 +408,73 @@ export default function CreateEstimatePage() {
 
                 {step === 4 && (
                     <div className="animate-fade-in">
-                        <h3>Summary</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
-                            <div>
-                                <p style={{ color: 'var(--secondary)' }}>Project</p>
-                                <h4>{formData.projectName}</h4>
-                                <p style={{ color: 'var(--secondary)' }}>Client</p>
-                                <h4>{formData.clientName}</h4>
-                            </div>
-                            <div>
-                                <p style={{ color: 'var(--secondary)' }}>Timeline</p>
-                                <h4>{formData.startDate} • {formData.duration} {formData.durationUnit}</h4>
-                                <p style={{ fontSize: '0.9rem', color: 'var(--secondary)' }}>({getWorkingDays()} working days)</p>
-                            </div>
+                        <h3 className="mb-6">Estimate Summary</h3>
+                        <div className="grid grid-cols-2 gap-8 mb-8">
+                            <Card className="!bg-slate-800/50">
+                                <label>Project Details</label>
+                                <h4 className="mt-2 text-xl text-white">{formData.projectName}</h4>
+                                <p className="text-primary">{formData.clientName}</p>
+                            </Card>
+                            <Card className="!bg-slate-800/50">
+                                <label>Timeline</label>
+                                <h4 className="mt-2 text-xl text-white">{formData.duration} {formData.durationUnit}</h4>
+                                <p className="text-secondary">Starts {new Date(formData.startDate).toLocaleDateString()}</p>
+                            </Card>
                         </div>
 
-                        <h4>Cost Breakdown</h4>
-                        <table style={{ marginBottom: '2rem', width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
-                                    <th style={{ textAlign: 'left', padding: '0.5rem' }}>Task</th>
-                                    <th style={{ textAlign: 'left', padding: '0.5rem' }}>Roles</th>
-                                    <th style={{ textAlign: 'left', padding: '0.5rem' }}>Days</th>
-                                    <th style={{ textAlign: 'right', padding: '0.5rem' }}>Internal Cost</th>
-                                    <th style={{ textAlign: 'right', padding: '0.5rem' }}>Charge Out</th>
-                                    <th style={{ textAlign: 'right', padding: '0.5rem' }}>Margin</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {calculateCosts().breakdown.map((item, i) => (
-                                    <tr key={i} style={{ borderBottom: '1px solid var(--card-border)' }}>
-                                        <td style={{ padding: '0.5rem' }}>{item.description}</td>
-                                        <td style={{ padding: '0.5rem' }}>{item.roleNames}</td>
-                                        <td style={{ padding: '0.5rem' }}>{item.days}</td>
-                                        <td style={{ textAlign: 'right', padding: '0.5rem' }}>{symbol}{item.internal.toLocaleString()}</td>
-                                        <td style={{ textAlign: 'right', padding: '0.5rem' }}>{symbol}{item.charge.toLocaleString()}</td>
-                                        <td style={{ textAlign: 'right', padding: '0.5rem', color: item.margin < 30 ? 'var(--danger)' : 'var(--success)' }}>
-                                            {item.margin.toFixed(1)}%
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Roles</th>
+                                        <th className="text-right">Time</th>
+                                        <th className="text-right">Cost</th>
+                                        <th className="text-right">Revenue</th>
+                                        <th className="text-right">Margin</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr style={{ fontWeight: 'bold', background: 'var(--background)' }}>
-                                    <td colSpan={3} style={{ padding: '0.5rem' }}>Total</td>
-                                    <td style={{ textAlign: 'right', padding: '0.5rem', color: 'var(--secondary)' }}>{symbol}{calculateCosts().internalTotal.toLocaleString()}</td>
-                                    <td style={{ textAlign: 'right', padding: '0.5rem', color: 'var(--success)' }}>{symbol}{calculateCosts().chargeTotal.toLocaleString()}</td>
-                                    <td style={{ textAlign: 'right', padding: '0.5rem' }}>{calculateCosts().totalMargin.toFixed(1)}%</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {calculateCosts().breakdown.map((item, i) => (
+                                        <tr key={i}>
+                                            <td className="font-medium">{item.description}</td>
+                                            <td className="text-sm text-muted">{item.roleNames}</td>
+                                            <td className="text-right">{item.days}d</td>
+                                            <td className="text-right text-muted">{symbol}{item.internal.toLocaleString()}</td>
+                                            <td className="text-right font-medium">{symbol}{item.charge.toLocaleString()}</td>
+                                            <td className="text-right font-bold" style={{ color: item.margin < 30 ? 'var(--danger)' : 'var(--secondary)' }}>
+                                                {item.margin.toFixed(1)}%
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr className="bg-slate-800/50 text-lg">
+                                        <td colSpan={3} className="font-bold">Total Project Value</td>
+                                        <td className="text-right text-muted">{symbol}{calculateCosts().internalTotal.toLocaleString()}</td>
+                                        <td className="text-right text-success font-bold text-xl drop-shadow-lg">{symbol}{calculateCosts().chargeTotal.toLocaleString()}</td>
+                                        <td className="text-right text-primary font-bold">{calculateCosts().totalMargin.toFixed(1)}%</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 )}
 
-                {error && <p style={{ color: 'var(--danger)', marginTop: '1rem' }}>{error}</p>}
+                {error && <div className="p-4 mt-6 bg-red-500/10 border border-red-500/50 rounded-xl text-red-500 text-center">{error}</div>}
 
-                <div className="flex justify-between mt-8">
+                <div className="flex justify-between mt-10 pt-6 border-t border-slate-800">
                     {step > 1 ? (
-                        <button onClick={handleBack} className="btn btn-secondary">Back</button>
+                        <Button variant="ghost" onClick={handleBack}>← Back</Button>
                     ) : <div />}
 
                     {step < 4 ? (
-                        <button onClick={handleNext} className="btn btn-primary">Next</button>
+                        <Button variant="primary" onClick={handleNext}>Next Step →</Button>
                     ) : (
-                        <button onClick={handleSubmit} className="btn btn-primary" style={{ background: 'var(--success)' }}>Create Estimate</button>
+                        <Button variant="primary" onClick={handleSubmit} className="!bg-green-500 hover:!bg-green-400 !shadow-green-500/50">Create Estimate</Button>
                     )}
                 </div>
-            </div>
+            </Card>
         </main>
     );
 }
